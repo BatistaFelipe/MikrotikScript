@@ -1,3 +1,5 @@
 node_modules/
 .zed-dev/
 *.wasm
+build/
+__pycache__/
