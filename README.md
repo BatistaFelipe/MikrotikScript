@@ -57,5 +57,18 @@ substitua `grammars.mikrotik.rev` pelo SHA do commit que a contém. Atualize as 
 caso o destino seja outro fork. A instalação local acima funciona antes disso.
 Nenhum push ou publicação é realizado pelos scripts.
 
+## Agentes de revisão
+
+As definições fornecidas para revisão ficam em `.claude/agents/`:
+
+- `code-reviewer.md`: revisão de comportamento, qualidade e manutenção.
+- `security-reviewer.md`: revisão de segurança, dependências e dados sensíveis.
+
+Os arquivos mantêm o formato e os metadados do Claude Code, incluindo `model:
+sonnet`. No Claude Code, solicite a execução dos agentes pelos seus nomes. Em
+outras ferramentas, forneça essas definições como orientação para a revisão;
+os nomes de ferramentas e o modelo dependem do executor. A configuração desses
+agentes não é necessária para compilar ou instalar a extensão no Zed.
+
 Referências: [linguagens no Zed](https://zed.dev/docs/extensions/languages) e
 [desenvolvimento de extensões](https://zed.dev/docs/extensions/developing-extensions).
