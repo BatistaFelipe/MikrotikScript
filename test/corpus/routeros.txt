@@ -62,3 +62,23 @@ gateway=192.0.2.254
   (comment) (path) (identifier) (identifier) (line_continuation)
   (identifier) (operator) (ipv4)
   (builtin) (string (string_content) (string_expression (parenthesized_expression (variable (identifier)) (operator) (number)))))
+
+==================
+Hash at the start of a string is not a comment
+==================
+:put "# exported comment" # actual comment
+:put "still code"
+---
+(source_file
+  (builtin) (string (string_content)) (comment)
+  (builtin) (string (string_content)))
+
+==================
+Hash after interpolation preserves following statements
+==================
+:put "Hello $name # tag"
+:put "still code"
+---
+(source_file
+  (builtin) (string (string_content) (variable (identifier)) (string_content))
+  (builtin) (string (string_content)))

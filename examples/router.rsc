@@ -22,5 +22,8 @@ set [ find default-name=ether1 ] mac-address=02:00:00:00:00:01
 }
 :delay 1h30m
 :put "Result: $($retryCount + 1)"
+:put "# exported comment" # actual comment
+:put "Hello $retryCount # tag"
+:put "still code"
 /ip route add dst-address=0.0.0.0/0 \
     gateway=192.0.2.254 disabled=no

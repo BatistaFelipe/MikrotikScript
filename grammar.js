@@ -22,7 +22,8 @@ module.exports = grammar({
       $.string_content, $.escape_sequence, $.variable,
       $.string_expression,
     )), '"'),
-    string_content: _ => token(prec(-1, /[^"\\$]+/)),
+    // Keep hashes inside strings from being consumed by global comment extras.
+    string_content: _ => token(prec(1, /[^"\\$]+/)),
     escape_sequence: _ => token(seq('\\', choice(/[0-9a-fA-F]{2}/, /[^\r\n]/, /\r?\n/))),
     variable: $ => seq('$', choice($.identifier, $.number, $.quoted_variable)),
     quoted_variable: _ => token(seq('"', repeat(choice(/[^"\\\r\n]/, /\\[^\r\n]/)), '"')),

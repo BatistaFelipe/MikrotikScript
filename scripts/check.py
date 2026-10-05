@@ -38,9 +38,10 @@ for query in ('highlights', 'brackets', 'indents'):
             'variable': '$retryCount',
             'string.special': '2001:db8::1/64',
             'string.escape': '\\n',
+            'string': '"# exported comment"',
             'number': '1h30m',
         }
         for capture, text in expected.items():
             pattern = rf' - {re.escape(capture)},[^\n]*text: `{re.escape(text)}`'
             assert re.search(pattern, output), f'missing {capture} capture for {text!r}'
-print('PASS: 6 corpus cases, example parsed without errors, 3 Zed queries, 9 representative highlight captures, TOML configuration.')
+print('PASS: corpus suite, example parsed without errors, 3 Zed queries, representative highlight captures, TOML configuration.')
