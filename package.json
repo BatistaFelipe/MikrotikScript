@@ -9,6 +9,8 @@
     "test": "tree-sitter test",
     "parse": "tree-sitter parse examples/router.rsc",
     "check": "python3 scripts/check.py",
+    "check:release": "python3 scripts/check_release.py",
+    "build:wasm": "python3 scripts/build_wasm.py",
     "prepare:zed": "python3 scripts/prepare_zed.py"
   },
   "devDependencies": {

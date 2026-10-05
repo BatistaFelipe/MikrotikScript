@@ -1,74 +1,74 @@
-# MikroTik RouterOS no Zed
+# MikroTik RouterOS for Zed
 
-Extensão de destaque de sintaxe para arquivos de configuração e scripts `.rsc`
-no Zed, usando Tree-sitter. Inclui pareamento de delimitadores e indentação, sem
-LSP ou código Rust próprio.
+Syntax highlighting for MikroTik RouterOS configuration and scripts (`.rsc`) in
+Zed. Includes bracket matching and indentation, using Tree-sitter without a
+language server or custom Rust code.
 
-## Desenvolver e testar
+## Install and test locally
 
-Requisitos: Node.js/npm, Python 3.11+, Git e um compilador C para os testes nativos.
-O Tree-sitter CLI está fixado no lockfile.
+This extension has not yet been submitted to the Zed registry. In Zed, open
+**Extensions > Install Dev Extension**, select this repository's root directory,
+then open `examples/router.rsc`. The manifest uses a fixed public grammar commit.
+Zed automatically downloads the WASI SDK needed to compile it. Follow the dev
+extension prerequisites for your Zed version.
+
+## Develop
+
+Requirements: Node.js/npm, Python 3.11+, Git and a C compiler for native tests.
+The Tree-sitter CLI version is pinned in the lockfile.
 
 ```sh
 npm ci
 npm run generate
-npm test
 npm run check
 npm run prepare:zed
 ```
 
-O último comando prepara uma cópia da extensão e uma revisão Git local da
-gramática em `.zed-dev/`, sem criar commits no projeto ou publicar arquivos.
-No Zed, abra **Extensions > Install Dev Extension**, selecione o diretório
-`extension` impresso pelo comando e abra `examples/router.rsc`.
-O Zed baixa automaticamente o wasi-sdk necessário para compilar a gramática.
-Siga os requisitos de instalação de extensões da sua versão do Zed.
-Após alterações, gere o parser novamente, execute os testes e prepare/reinstale
-uma nova cópia local.
+`npm run check` runs the corpus tests, checks a representative export and validates
+the Zed queries. `npm test` runs only the corpus suite.
 
-Em ambientes com cache de usuário somente leitura, configure um diretório gravável:
+When editing the grammar, `npm run prepare:zed` creates an isolated local grammar
+commit and extension snapshot under `.zed-dev/`, without committing to or pushing
+this project. Select the printed `extension` directory in **Install Dev Extension**.
+Regenerate the parser and prepare/reinstall a new snapshot after changes. Keep
+snapshots needed by an installed dev extension until it has been replaced.
+
+If the default cache directories are read-only, use writable ones:
 
 ```sh
 export npm_config_cache=/tmp/mikrotik-npm-cache
 export XDG_CACHE_HOME=/tmp/mikrotik-tree-sitter-cache
 ```
 
-## Cobertura
+## Coverage and limitations
 
-- Comentários `#`, continuação de linha, strings, escapes e interpolação.
-- Variáveis simples e nomes entre aspas, palavras de controle e comandos `:`.
-- Caminhos de menus, comandos comuns, parâmetros seguidos de `=` e operadores.
-- IPv4/CIDR, IPv6, MAC, números e durações.
-- Blocos, expressões e substituições de comandos, com pareamento e indentação.
+- Comments, line continuation, strings, escapes and interpolation.
+- Variables, quoted variable names, control words and colon-prefixed commands.
+- Menu paths, common commands, properties followed by `=` and operators.
+- IPv4/CIDR, IPv6, MAC addresses, numbers and durations.
+- Nested blocks, expressions and command substitutions.
 
-Esta é uma gramática estrutural para destaque de sintaxe: não verifica a validade
-de comandos, nomes de parâmetros ou intervalos de endereços no RouterOS.
-A cobertura inicial não inclui todas as formas de data, IPv6 com zona/IPv4
-embutido ou todas as combinações de escapes dentro de expressões interpoladas.
-Os casos em `test/corpus/` e as capturas verificadas por `scripts/check.py`
-documentam o comportamento testado. A aparência depende do tema do Zed e requer
-verificação visual no editor.
+This structural grammar does not validate RouterOS commands, properties or
+address ranges. Coverage does not yet include every date format, IPv6 zone or
+embedded IPv4 form, or every escape combination in interpolated expressions.
+See `test/corpus/` and `scripts/check.py` for verified behavior. Visual appearance
+depends on the Zed theme and requires testing in the editor.
 
-## Publicação futura
+## Release preparation
 
-O manifesto aponta para este repositório, na branch `master`.
-Antes de distribuir a extensão, publique a gramática no repositório correto e
-substitua `grammars.mikrotik.rev` pelo SHA do commit que a contém. Atualize as URLs
-caso o destino seja outro fork. A instalação local acima funciona antes disso.
-Nenhum push ou publicação é realizado pelos scripts.
+Version: **0.1.0**, not yet published. See [PUBLISHING.md](PUBLISHING.md) for the
+release checks, required manual testing and registry submission steps, and
+[CHANGELOG.md](CHANGELOG.md) for release notes. The MIT license is in [LICENSE](LICENSE).
 
-## Agentes de revisão
+## Review agents and commits
 
-As definições fornecidas para revisão ficam em `.claude/agents/`:
+Agent definitions supplied for code and security reviews are in `.claude/agents/`.
+They retain the Claude Code format and `model: sonnet` metadata. Invoke them by
+name in Claude Code, or supply their guidance to your review tool using its
+available model and tools. They are not required to install the Zed extension.
 
-- `code-reviewer.md`: revisão de comportamento, qualidade e manutenção.
-- `security-reviewer.md`: revisão de segurança, dependências e dados sensíveis.
+Use Conventional Commits, for example `feat(zed): add language support`,
+`fix(parser): preserve string content` and `chore(ci): validate release metadata`.
 
-Os arquivos mantêm o formato e os metadados do Claude Code, incluindo `model:
-sonnet`. No Claude Code, solicite a execução dos agentes pelos seus nomes. Em
-outras ferramentas, forneça essas definições como orientação para a revisão;
-os nomes de ferramentas e o modelo dependem do executor. A configuração desses
-agentes não é necessária para compilar ou instalar a extensão no Zed.
-
-Referências: [linguagens no Zed](https://zed.dev/docs/extensions/languages) e
-[desenvolvimento de extensões](https://zed.dev/docs/extensions/developing-extensions).
+References: [Zed language extensions](https://zed.dev/docs/extensions/languages),
+[extension development](https://zed.dev/docs/extensions/developing-extensions).

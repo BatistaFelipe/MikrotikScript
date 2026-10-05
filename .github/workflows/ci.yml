@@ -1,0 +1,47 @@
+name: Validate extension
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+          cache: npm
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+      - run: npm ci --no-audit --no-fund
+      - name: Check generated parser is current
+        run: |
+          npm run generate
+          git diff --exit-code -- src
+      - run: npm run check
+      - run: npm run check:release
+      - run: npm audit --audit-level=high
+      - name: Install verified WASI SDK
+        shell: bash
+        run: |
+          set -euo pipefail
+          sdk_archive="$RUNNER_TEMP/wasi-sdk-34.0-x86_64-linux.tar.gz"
+          curl --fail --location --retry 2 \
+            https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-34/wasi-sdk-34.0-x86_64-linux.tar.gz \
+            --output "$sdk_archive"
+          printf '%s  %s\n' b761e3a0721dbae9c09a0059e5fdb2bf917d1b4a8a7b430fb3b5aafb0984b2c4 "$sdk_archive" | sha256sum --check
+          tar -xzf "$sdk_archive" -C "$RUNNER_TEMP"
+          printf 'WASI_SDK_PATH=%s\n' "$RUNNER_TEMP/wasi-sdk-34.0-x86_64-linux" >> "$GITHUB_ENV"
+      - run: npm run build:wasm

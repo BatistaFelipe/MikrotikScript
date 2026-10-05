@@ -8,6 +8,5 @@ repository = "https://github.com/BatistaFelipe/MikrotikScript"
 
 [grammars.mikrotik]
 repository = "https://github.com/BatistaFelipe/MikrotikScript"
-# For distribution, replace with the commit containing this grammar after pushing.
-# Local development uses scripts/prepare_zed.py and an isolated local snapshot.
-rev = "master"
+# Published grammar from the merged, reviewed implementation.
+rev = "7b6b2fd196256b64bef47a3ec03211136a587e54"
